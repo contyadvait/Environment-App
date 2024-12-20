@@ -22,7 +22,7 @@ struct WelcomeView: View {
     var one: some View {
         VStack(spacing: 10) {
             HStack {
-                Text("Welcome to {App name}!")
+                Text("Welcome to LeafLogic!")
                     .font(.custom("Crimson Pro", size: 36))
                 Spacer()
             }
@@ -74,7 +74,7 @@ struct WelcomeView: View {
     var two: some View {
         VStack(spacing: 10) {
             HStack {
-                Text("Welcome to {App name}!")
+                Text("Welcome to LeafLogic!")
                     .font(.custom("Crimson Pro", size: 36))
                 Spacer()
             }

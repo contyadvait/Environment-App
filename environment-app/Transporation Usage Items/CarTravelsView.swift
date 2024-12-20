@@ -32,6 +32,11 @@ struct CarTravelsView: View {
                 }
                 .buttonStyle(.plain)
             }
+            .onAppear {
+                if userData.carType != .nothing {
+                    car = userData.carType
+                }
+            }
             HStack {
                 Text("Track your car travel usage here")
                     .font(.custom("Crimson Pro", size: 24))
@@ -64,8 +69,10 @@ struct CarTravelsView: View {
                     .font(.custom("Josefin Sans", size: 16))
                 Picker("Select a Month", selection: $car) {
                     ForEach(Car.allCases, id: \.self) { month in
-                        Text(month.displayName)
-                            .font(.custom("Josefin Sans", size: 16))
+                        if month.displayName != "Public Transport" {
+                            Text(month.displayName)
+                                .font(.custom("Josefin Sans", size: 16))
+                        }
                     }
                 }
                 .pickerStyle(.wheel)

@@ -1,20 +1,20 @@
-//
-//  AirplaneEmissionMangement.swift
-//  environment-app
-//
-//  Created by Milind Contractor on 20/12/24.
-//
 import Foundation
 
-// Aircraft emissions data structure
-struct AircraftEmissions {
-    let model: String
-    let kgCO2PerKm: Double
-    let engineCount: Int
+struct Airport {
+    let code: String
+    let name: String
+    let coordinates: (latitude: Double, longitude: Double)
 }
 
 class FlightEmissionsCalculator {
-    // Database of aircraft emissions data
+    // Aircraft emissions data structure
+    private struct AircraftEmissions {
+        let model: String
+        let kgCO2PerKm: Double
+        let engineCount: Int
+    }
+    
+    // Aircraft database
     private let aircraftData: [AircraftEmissions] = [
         // Airbus models
         AircraftEmissions(model: "A300", kgCO2PerKm: 20.5, engineCount: 2),
@@ -38,56 +38,108 @@ class FlightEmissionsCalculator {
         AircraftEmissions(model: "CRJ series", kgCO2PerKm: 9.8, engineCount: 2),
         AircraftEmissions(model: "ATR series", kgCO2PerKm: 5.2, engineCount: 2),
         AircraftEmissions(model: "ERJ series", kgCO2PerKm: 8.9, engineCount: 2)
-    ]
+     ]
     
-    // Airport coordinates database (sample)
-    private let airportCoordinates: [String: (latitude: Double, longitude: Double)] = [
-        "LAX": (33.9425, -118.4081),
-        "JFK": (40.6413, -73.7781),
-        "LHR": (51.4700, -0.4543),
-        "SYD": (-33.9399, 151.1753),
-        "DXB": (25.2532, 55.3657),
-        // Add more airports as needed
-    ]
+    enum CalculationError: Error {
+        case airportNotFound(String)
+        case aircraftNotFound(String)
+        case invalidDistance
+        case invalidEngineCount
+        case networkError(String)
+        case invalidResponse
+    }
     
-    // Calculate emissions for a flight
-    func calculateEmissions(from departure: String, to arrival: String, aircraftModel: String? = nil, engineCount: Int? = nil) -> Double? {
-        // Get coordinates
-        guard let departureCoords = airportCoordinates[departure],
-              let arrivalCoords = airportCoordinates[arrival] else {
-            print("Airport not found in database")
-            return nil
+    // Function to fetch airport data
+    func fetchAirportData(iataCode: String) async throws -> Airport {
+        // Using the AviationStack API (you'll need to sign up for a free API key)
+        let apiKey = "985e56511ce01c2c7cc96eff7a362755"
+        let urlString = "http://api.aviationstack.com/v1/airports?access_key=\(apiKey)&iata_code=\(iataCode)"
+        
+        guard let url = URL(string: urlString) else {
+            throw CalculationError.networkError("Invalid URL")
         }
+        
+        let (data, response) = try await URLSession.shared.data(from: url)
+        
+        guard let httpResponse = response as? HTTPURLResponse,
+              httpResponse.statusCode == 200 else {
+            throw CalculationError.networkError("Invalid response")
+        }
+        
+        struct AviationStackResponse: Codable {
+            struct AirportData: Codable {
+                let airport_name: String
+                let latitude: String
+                let longitude: String
+            }
+            let data: [AirportData]
+        }
+        
+        let decoder = JSONDecoder()
+        let result = try decoder.decode(AviationStackResponse.self, from: data)
+        
+        guard let airportData = result.data.first else {
+            throw CalculationError.airportNotFound(iataCode)
+        }
+        
+        return Airport(
+            code: iataCode,
+            name: airportData.airport_name,
+            coordinates: (
+                latitude: Double(airportData.latitude) ?? 0,
+                longitude: Double(airportData.longitude) ?? 0
+            )
+        )
+    }
+    
+    // Calculate emissions with online airport data
+    func calculateEmissions(from departure: String,
+                          to arrival: String,
+                          aircraftModel: String? = nil,
+                          engineCount: Int? = nil) async throws -> Double {
+        // Convert to uppercase
+        let depCode = departure.uppercased()
+        let arrCode = arrival.uppercased()
+        
+        // Fetch airport data
+        let departureAirport = try await fetchAirportData(iataCode: depCode)
+        let arrivalAirport = try await fetchAirportData(iataCode: arrCode)
         
         // Calculate distance
         let distance = calculateDistance(
-            from: departureCoords,
-            to: arrivalCoords
+            from: departureAirport.coordinates,
+            to: arrivalAirport.coordinates
         )
+        
+        guard distance > 0 else {
+            throw CalculationError.invalidDistance
+        }
         
         // Get emissions rate
         let emissionsRate: Double
         
         if let model = aircraftModel {
-            // Use specific aircraft model if provided
             guard let aircraft = aircraftData.first(where: { $0.model == model }) else {
-                print("Aircraft model not found")
-                return nil
+                throw CalculationError.aircraftNotFound(model)
             }
             emissionsRate = aircraft.kgCO2PerKm
         } else if let engines = engineCount {
-            // Estimate based on engine count if model not provided
-            let averageEmissionsForEngineCount = aircraftData
-                .filter { $0.engineCount == engines }
-                .map { $0.kgCO2PerKm }
-                .reduce(0.0, +) / Double(aircraftData.filter { $0.engineCount == engines }.count)
-            emissionsRate = averageEmissionsForEngineCount
+            guard engines > 0 && engines <= 4 else {
+                throw CalculationError.invalidEngineCount
+            }
+            
+            let matchingAircraft = aircraftData.filter { $0.engineCount == engines }
+            guard !matchingAircraft.isEmpty else {
+                throw CalculationError.invalidEngineCount
+            }
+            
+            emissionsRate = matchingAircraft.map { $0.kgCO2PerKm }.reduce(0, +) / Double(matchingAircraft.count)
         } else {
-            print("Either aircraft model or engine count must be provided")
-            return nil
+            // Default to average twin-engine emissions
+            let twinEngineAircraft = aircraftData.filter { $0.engineCount == 2 }
+            emissionsRate = twinEngineAircraft.map { $0.kgCO2PerKm }.reduce(0, +) / Double(twinEngineAircraft.count)
         }
         
-        // Calculate total emissions
         return distance * emissionsRate
     }
     
@@ -110,5 +162,24 @@ class FlightEmissionsCalculator {
     }
 }
 
-// Example usage:
 let calculator = FlightEmissionsCalculator()
+
+// Example usage with async/await:
+func calculateFlightEmissions() async {
+    let calculator = FlightEmissionsCalculator()
+    
+    do {
+        let emissions = try await calculator.calculateEmissions(
+            from: "LHR",
+            to: "JFK",
+            aircraftModel: "B777"
+        )
+        print("Estimated CO2 emissions: \(Int(emissions)) kg")
+    } catch FlightEmissionsCalculator.CalculationError.airportNotFound(let code) {
+        print("Airport not found: \(code)")
+    } catch FlightEmissionsCalculator.CalculationError.networkError(let message) {
+        print("Network error: \(message)")
+    } catch {
+        print("An error occurred: \(error)")
+    }
+}

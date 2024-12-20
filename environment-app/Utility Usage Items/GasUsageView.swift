@@ -8,7 +8,6 @@
 import SwiftUI
 import CustomAlert
 import CustomToggle
-import AnimatedToggle
 
 struct GasUsageView: View {
     @Binding var userData: StorageData
@@ -50,21 +49,8 @@ struct GasUsageView: View {
                 Text("Do you have a gas water heater?")
                     .font(.custom("Josefin Sans", size: 16))
                 Spacer()
-                AnimatedToggle(
-                    isOn: gasWaterHeater,
-                    settings: .init(height: 20),
-                    onTapAction: { isOn in
-                        
-                    }
-                )
-                .editing(
-                    on: .init(
-                        backgroundColor: .green, shadowColor: colorScheme == .dark ? .black : .white
-                    ),
-                    off: .init(
-                        backgroundColor: .red, shadowColor: colorScheme == .dark ? .black : .white
-                    )
-                )
+                BounceToggle(status: $gasWaterHeater, colorClose: .red, colorOpen: .green, thumbColor: .white,enableLine: false)
+                    .scaleEffect(0.6)
             }
             
             HStack {

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import CustomToggle
+import CustomAlert
 
 struct AirTravelsView: View {
     @State var departureAirport: String = ""
@@ -18,6 +19,7 @@ struct AirTravelsView: View {
     @State var model: String = "B737 NG"
     @State var confirm = false
     @Binding var userData: StorageData
+    @Environment(\.dismiss) var dismiss
 
     var body: some View {
         VStack(spacing: 5) {
@@ -25,6 +27,13 @@ struct AirTravelsView: View {
                 Text("Air Travels Tracker")
                     .font(.custom("Crimson Pro", size: 36))
                 Spacer()
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .symbolRenderingMode(.hierarchical)
+                }
+                .buttonStyle(.plain)
             }
             
             HStack {
@@ -44,7 +53,7 @@ struct AirTravelsView: View {
             HStack {
                 Text("Enter your arrival airport (3 character code):")
                     .font(.custom("Josefin Sans", size: 16))
-                TextField("KUL", text: $departureAirport)
+                TextField("KUL", text: $arrivalAirport)
                     .font(.custom("Josefin Sans", size: 16))
                     .textFieldStyle(.roundedBorder)
                     .keyboardType(.alphabet)
@@ -133,23 +142,47 @@ struct AirTravelsView: View {
             .padding()
         } actions: {
             Button {
-                if advanced {
-                    if calculator.calculateEmissions(from: departureAirport, to: arrivalAirport, aircraftModel: model)! >= 1150 {
-                        userData.credits = userData.credits - 25
+                Task {
+                    if advanced {
+                        do {
+                            let emissions = try await calculator.calculateEmissions(
+                                from: departureAirport,
+                                to: arrivalAirport,
+                                aircraftModel: model
+                            )
+                            if emissions >= 1150 {
+                                userData.credits = userData.credits - 25
+                            } else {
+                                userData.credits = userData.credits + 25
+                            }
+                        } catch {
+                            // Handle any errors here
+                            print("Error calculating emissions: \(error)")
+                        }
                     } else {
-                        userData.credits = userData.credits + 25
+                        do {
+                            let emissions = try await calculator.calculateEmissions(
+                                from: departureAirport,
+                                to: arrivalAirport,
+                                engineCount: engines
+                            )
+                            if emissions >= 1150 {
+                                userData.credits = userData.credits - 25
+                            } else {
+                                userData.credits = userData.credits + 25
+                            }
+                        } catch {
+                            // Handle any errors here
+                            print("Error calculating emissions: \(error)")
+                        }
                     }
-                } else {
-                    if calculator.calculateEmissions(from: departureAirport, to: arrivalAirport, engineCount: engines)! >= 1150 {
-                        userData.credits = userData.credits - 25
-                    } else {
-                        userData.credits = userData.credits + 25
-                    }
+                    dismiss()
                 }
             } label: {
                 Text("Yes, I am sure about this")
                     .font(.custom("Josefin Sans", size: 14))
             }
+
             
             Button(role: .cancel) {  } label: { Text("No wait, I think I entered it wrongly!").font(.custom("Josefin Sans", size: 14)).foregroundStyle(.red) }
         }

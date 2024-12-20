@@ -16,8 +16,8 @@ struct ContentView: View {
     
     func transportItemButton(transport: Transport, icon: String, text: String) -> some View {
         Button {
-            openTransport = true
             openTransportReason = transport
+            openTransport = true
         } label: {
             VStack(spacing: 10) {
                 Image(systemName: icon)
@@ -139,7 +139,10 @@ struct ContentView: View {
                     UtilityManagerView(userData: $userData, utilityOpenReason: openUtilityReason)
                 }
                 .fullScreenCover(isPresented: $openTransport) {
-                    TransportationView(userData: $userData, transportOpenReason: openTransportReason)
+                    TransportationView(userData: $userData, transportOpenReason: $openTransportReason)
+                        .onAppear {
+                            print(openTransportReason)
+                        }
                 }
             }
         }

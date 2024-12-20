@@ -9,14 +9,19 @@ import SwiftUI
 
 struct TransportationView: View {
     @Binding var userData: StorageData
-    var transportOpenReason: Transport
+    @Binding var transportOpenReason: Transport
     var body: some View {
-        if transportOpenReason == .airplane {
-            AirTravelsView(userData: $userData)
-        } else if transportOpenReason == .car {
-            CarTravelsView(userData: $userData)
-        } else if transportOpenReason == .publicTransport {
-//            PublicTransportView(userData: $userData)
+        VStack {
+            if transportOpenReason == .airplane {
+                AirTravelsView(userData: $userData)
+            } else if transportOpenReason == .car {
+                CarTravelsView(userData: $userData)
+            } else if transportOpenReason == .publicTransport {
+                //            PublicTransportView(userData: $userData)
+            }
+        }
+        .onAppear {
+            print(transportOpenReason)
         }
     }
 }

@@ -1,25 +1,23 @@
 //
-//  UtilityManagerView.swift
+//  PublicTransportView.swift
 //  environment-app
 //
 //  Created by Milind Contractor on 20/12/24.
 //
 
 import SwiftUI
-import CustomAlert
-import CustomToggle
 
-struct ElectricalUsageView: View {
+struct PublicTransportView: View {
     @Binding var userData: StorageData
-    @State var electricalUsage: Int = 0
-    @State var confirm = false
     @Environment(\.dismiss) var dismiss
-    @State var month: Month = .jan
-    @Environment(\.colorScheme) var colorScheme
+    @State var distanceTravelled: Int = 3
+    @State var confirm = false
+    @State var month = Month.jan
+    
     var body: some View {
         VStack {
             HStack {
-                Text("Electrical Usage")
+                Text("Public Transport Tracker")
                     .font(.custom("Crimson Pro", size: 36))
                 Spacer()
                 Button {
@@ -31,19 +29,26 @@ struct ElectricalUsageView: View {
                 .buttonStyle(.plain)
             }
             HStack {
-                Text("Track your electrical usage here")
+                Text("Track travels in Public Transport here")
                     .font(.custom("Crimson Pro", size: 24))
                 Spacer()
             }
+            .padding(.bottom)
             HStack {
-                TextField("Enter Electrical Usage Here", value: $electricalUsage, format: .number)
-                    .keyboardType(.numberPad)
+                Text("How far did you approximately travel?")
+                    .font(.custom("Josefin Sans", size: 16))
+                Spacer()
+            }
+            HStack {
+                TextField("distance", value: $distanceTravelled, format: .number)
+                    .keyboardType(.decimalPad)
                     .textFieldStyle(.roundedBorder)
                     .font(.custom("Josefin Sans", size: 16))
-                Text("kWh")
+                Text("km")
                     .font(.custom("Josefin Sans", size: 16))
+                Spacer()
             }
-                        
+            
             HStack {
                 Text("What month is this for? ")
                     .font(.custom("Josefin Sans", size: 16))
@@ -66,6 +71,7 @@ struct ElectricalUsageView: View {
             }
             .buttonStyle(.borderedProminent)
             
+            
         }
         .padding()
         .customAlert(isPresented: $confirm) {
@@ -77,7 +83,7 @@ struct ElectricalUsageView: View {
                 }
                 
                 HStack {
-                    Text("You have used \(electricalUsage)kWh in the month of \(month.displayName). You may loose credits if you have used too much.")
+                    Text("You have travelled \(distanceTravelled) in \(month). You may loose credits if you have used too much.")
                         .font(.custom("Josefin Sans", size: 16))
                         .multilineTextAlignment(.leading)
                     Spacer()
@@ -86,13 +92,12 @@ struct ElectricalUsageView: View {
             .padding()
         } actions: {
             Button {
-                if electricalUsage <= 450 {
-                    userData.credits = userData.credits + 10
+                if carCalculator.calculateEmissions(carType: .nothing, distance: Float(distanceTravelled)).totalEmissions <= Double(6.33) {
+                    userData.credits = userData.credits + 25
                 } else {
-                    userData.credits = userData.credits - 10
+                    userData.credits = userData.credits + 25
                 }
-                userData.housingData.append(HousingData(month: month, amount: Float(electricalUsage), type: .electrical))
-                trimOldHousingData(userData: &userData)
+
                 dismiss()
             } label: {
                 Text("Yes, I am sure about this")
@@ -105,7 +110,7 @@ struct ElectricalUsageView: View {
 }
 
 #Preview {
-    ElectricalUsageView(userData: .constant(StorageData(name: "Advait",
-                                                 username: "contyadvait",
-                                                 carType: .hybrid)))
+    PublicTransportView(userData: .constant(StorageData(name: "Advait",
+                                                        username: "contyadvait",
+                                                        carType: .hybrid)))
 }

@@ -12,3 +12,7 @@ Features:
                                     
 Data Management:
 - Done through a module called [Forever](https://github.com/jiachenyee/forever)
+
+
+## Bugs to Patch
+- Graphs are borked slightly (doesnt appear in order as it should)
