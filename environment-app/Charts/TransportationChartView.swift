@@ -19,10 +19,9 @@ struct TransportationChartView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
+            Text("Transportation Footprint")
+                .font(.custom("Josefin Sans", size: 16))
             if transportationData.count != 0 {
-                Text("Transportation Footprint")
-                    .font(.custom("Josefin Sans", size: 16))
-                
                 Chart {
                     ForEach(Transport.allCases, id: \.self) { type in
                         if let typeData = groupedData[type] {

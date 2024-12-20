@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		F151D2042D14097F002C4A28 /* Forever in Frameworks */ = {isa = PBXBuildFile; productRef = F151D2032D14097F002C4A28 /* Forever */; };
+		F16F57EE2D151AD10082EEEA /* CustomAlert in Frameworks */ = {isa = PBXBuildFile; productRef = F16F57ED2D151AD10082EEEA /* CustomAlert */; };
+		F16F57F12D151FAA0082EEEA /* AnimatedToggle in Frameworks */ = {isa = PBXBuildFile; productRef = F16F57F02D151FAA0082EEEA /* AnimatedToggle */; };
+		F16F57F42D1520C80082EEEA /* CustomToggle in Frameworks */ = {isa = PBXBuildFile; productRef = F16F57F32D1520C80082EEEA /* CustomToggle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,7 +43,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F16F57EE2D151AD10082EEEA /* CustomAlert in Frameworks */,
+				F16F57F42D1520C80082EEEA /* CustomToggle in Frameworks */,
 				F151D2042D14097F002C4A28 /* Forever in Frameworks */,
+				F16F57F12D151FAA0082EEEA /* AnimatedToggle in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -84,6 +90,9 @@
 			name = "environment-app";
 			packageProductDependencies = (
 				F151D2032D14097F002C4A28 /* Forever */,
+				F16F57ED2D151AD10082EEEA /* CustomAlert */,
+				F16F57F02D151FAA0082EEEA /* AnimatedToggle */,
+				F16F57F32D1520C80082EEEA /* CustomToggle */,
 			);
 			productName = "environment-app";
 			productReference = F151D1F12D140900002C4A28 /* environment-app.app */;
@@ -115,6 +124,9 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				F151D2022D14097F002C4A28 /* XCRemoteSwiftPackageReference "Forever" */,
+				F16F57EC2D151AD10082EEEA /* XCRemoteSwiftPackageReference "CustomAlert" */,
+				F16F57EF2D151FAA0082EEEA /* XCRemoteSwiftPackageReference "AnimatedToggle" */,
+				F16F57F22D1520C80082EEEA /* XCRemoteSwiftPackageReference "CustomToggle" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = F151D1F22D140900002C4A28 /* Products */;
@@ -360,6 +372,30 @@
 				minimumVersion = 1.1.0;
 			};
 		};
+		F16F57EC2D151AD10082EEEA /* XCRemoteSwiftPackageReference "CustomAlert" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/divadretlaw/CustomAlert.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.0.3;
+			};
+		};
+		F16F57EF2D151FAA0082EEEA /* XCRemoteSwiftPackageReference "AnimatedToggle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/aisenurmor/AnimatedToggle.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+		F16F57F22D1520C80082EEEA /* XCRemoteSwiftPackageReference "CustomToggle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/akardas16/CustomToggle.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -367,6 +403,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = F151D2022D14097F002C4A28 /* XCRemoteSwiftPackageReference "Forever" */;
 			productName = Forever;
+		};
+		F16F57ED2D151AD10082EEEA /* CustomAlert */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F16F57EC2D151AD10082EEEA /* XCRemoteSwiftPackageReference "CustomAlert" */;
+			productName = CustomAlert;
+		};
+		F16F57F02D151FAA0082EEEA /* AnimatedToggle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F16F57EF2D151FAA0082EEEA /* XCRemoteSwiftPackageReference "AnimatedToggle" */;
+			productName = AnimatedToggle;
+		};
+		F16F57F32D1520C80082EEEA /* CustomToggle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F16F57F22D1520C80082EEEA /* XCRemoteSwiftPackageReference "CustomToggle" */;
+			productName = CustomToggle;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

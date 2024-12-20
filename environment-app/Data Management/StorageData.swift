@@ -117,3 +117,7 @@ struct StorageData: Codable, Identifiable {
     var housingData: [HousingData] = []
     var travelData: [TravelData] = []
 }
+
+let airbusModels = ["A300", "A310", "A320ceo", "A320neo", "A330ceo", "A330neo", "A340", "A350", "A380"]
+let boeingModels = ["B707", "B717", "B727", "B737", "B737 NG", "B737 MAX", "B747-400", "B747-8i", "B757", "B767", "B777", "B777x", "B787"]
+let others = ["CRJ series", "ATR series", "ERJ series", "ERJ-E2"]

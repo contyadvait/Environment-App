@@ -5,19 +5,7 @@ import Charts
 struct ContentView: View {
     @Forever("userdata") var userData = StorageData(name: "Advait",
                                                     username: "contyadvait",
-                                                    carType: .hybrid,
-                                                    housingData: [HousingData(month: .jan, amount: 20, type: .electrical),
-                                                                  HousingData(month: .jan, amount: 13.5, type: .water),
-                                                                  HousingData(month: .jan, amount: 10, type: .gas),
-                                                                  HousingData(month: .feb, amount: 19, type: .electrical),
-                                                                  HousingData(month: .feb, amount: 12, type: .water),
-                                                                  HousingData(month: .feb, amount: 9.8, type: .gas),
-                                                                  HousingData(month: .mar, amount: 19, type: .electrical),
-                                                                  HousingData(month: .mar, amount: 12, type: .water),
-                                                                  HousingData(month: .mar, amount: 9.8, type: .gas),
-                                                                  HousingData(month: .apr, amount: 19, type: .electrical),
-                                                                  HousingData(month: .apr, amount: 12, type: .water),
-                                                                  HousingData(month: .apr, amount: 9.8, type: .gas)])
+                                                    carType: .hybrid)
     @AppStorage("setup") var setup = false
     @Environment(\.colorScheme) var colorScheme
     let cornerRadius = 10.0
@@ -117,31 +105,7 @@ struct ContentView: View {
                                     HStack {
                                         housingItemButton(item: .electrical, icon: "bolt", text: "Electrical Usage")
                                         housingItemButton(item: .gas, icon: "flame", text: "Gas\nUsage")
-                                        VStack(spacing: 10) {
-                                            Image(systemName: "flame")
-                                            Text("Gas\nUsage")
-                                                .multilineTextAlignment(.center)
-                                                .font(.custom("Josefin Sans", size: 20))
-                                        }
-                                        .padding(10)
-                                        .frame(width: 120, height: 100)
-                                        .background(colorScheme == .dark ? Color(red: 18/225, green: 18/225, blue: 18/225) : Color.white)
-                                        .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
-                                        .shadow(color: colorScheme == .dark ? .white.opacity(0.01) : .black.opacity(0.1), radius: 15, x: 0, y: 5)
-                                        .foregroundStyle(colorScheme == .dark ? .white : .black)
-                                        
-                                        VStack(spacing: 10) {
-                                            Image(systemName: "drop")
-                                            Text("Water\nUsage")
-                                                .multilineTextAlignment(.center)
-                                                .font(.custom("Josefin Sans", size: 20))
-                                        }
-                                        .padding(10)
-                                        .frame(width: 120, height: 100)
-                                        .background(colorScheme == .dark ? Color(red: 18/225, green: 18/225, blue: 18/225) : Color.white)
-                                        .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
-                                        .shadow(color: colorScheme == .dark ? .white.opacity(0.01) : .black.opacity(0.1), radius: 15, x: 0, y: 5)
-                                        .foregroundStyle(colorScheme == .dark ? .white : .black)
+                                        housingItemButton(item: .water, icon: "drop", text: "Water\nUsage")
                                     }
                                 }
                             }
@@ -171,6 +135,12 @@ struct ContentView: View {
                 .ignoresSafeArea()
                 .padding()
                 .fullScreenCover(isPresented: $setup) { WelcomeView(userData: $userData, setup: $setup) }
+                .fullScreenCover(isPresented: $openUtility) {
+                    UtilityManagerView(userData: $userData, utilityOpenReason: openUtilityReason)
+                }
+                .fullScreenCover(isPresented: $openTransport) {
+                    TransportationView(userData: $userData, transportOpenReason: openTransportReason)
+                }
             }
         }
     }

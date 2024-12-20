@@ -1,5 +1,5 @@
 //
-//  UtilityManagerView.swift
+//  CarTravelsView.swift
 //  environment-app
 //
 //  Created by Milind Contractor on 20/12/24.
@@ -8,20 +8,20 @@
 import SwiftUI
 import CustomAlert
 import CustomToggle
-import AnimatedToggle
 
-struct GasUsageView: View {
+struct CarTravelsView: View {
     @Binding var userData: StorageData
-    @State var gasUsage: Int = 0
-    @State var confirm = false
-    @Environment(\.dismiss) var dismiss
+    @State var car: Car = .petrol
     @State var month: Month = .jan
-    @State var gasWaterHeater: Bool = false
-    @Environment(\.colorScheme) var colorScheme
+    @State var distanceTravelled: Double = 0
+    @Environment(\.dismiss) var dismiss
+    @State var confirm = false
+    @State var urbanDriving = true
+    
     var body: some View {
         VStack {
             HStack {
-                Text("Gas Usage")
+                Text("Car Travels")
                     .font(.custom("Crimson Pro", size: 36))
                 Spacer()
                 Button {
@@ -33,40 +33,19 @@ struct GasUsageView: View {
                 .buttonStyle(.plain)
             }
             HStack {
-                Text("Track your gas usage here")
+                Text("Track your car travel usage here")
                     .font(.custom("Crimson Pro", size: 24))
                 Spacer()
             }
             HStack {
-                TextField("Enter Gas Usage Here", value: $gasUsage, format: .number)
-                    .keyboardType(.numberPad)
+                TextField("Enter distance travelled in your car", value: $distanceTravelled, format: .number)
+                    .keyboardType(.decimalPad)
                     .textFieldStyle(.roundedBorder)
                     .font(.custom("Josefin Sans", size: 16))
-                Text("m³")
+                Text("km")
                     .font(.custom("Josefin Sans", size: 16))
             }
-            
-            HStack {
-                Text("Do you have a gas water heater?")
-                    .font(.custom("Josefin Sans", size: 16))
-                Spacer()
-                AnimatedToggle(
-                    isOn: gasWaterHeater,
-                    settings: .init(height: 20),
-                    onTapAction: { isOn in
                         
-                    }
-                )
-                .editing(
-                    on: .init(
-                        backgroundColor: .green, shadowColor: colorScheme == .dark ? .black : .white
-                    ),
-                    off: .init(
-                        backgroundColor: .red, shadowColor: colorScheme == .dark ? .black : .white
-                    )
-                )
-            }
-            
             HStack {
                 Text("What month is this for? ")
                     .font(.custom("Josefin Sans", size: 16))
@@ -79,6 +58,28 @@ struct GasUsageView: View {
                 .pickerStyle(.wheel)
                 .frame(height: 100)
             }
+            
+            HStack {
+                Text("What kind of car do you drive?")
+                    .font(.custom("Josefin Sans", size: 16))
+                Picker("Select a Month", selection: $car) {
+                    ForEach(Car.allCases, id: \.self) { month in
+                        Text(month.displayName)
+                            .font(.custom("Josefin Sans", size: 16))
+                    }
+                }
+                .pickerStyle(.wheel)
+                .frame(height: 100)
+            }
+            
+            HStack {
+                Text("Did you drive this mainly in an urban environment?")
+                    .font(.custom("Josefin Sans", size: 16))
+                Spacer()
+                BounceToggle(status: $urbanDriving, colorClose: .red, colorOpen: .green, thumbColor: .white,enableLine: false)
+                    .scaleEffect(0.6)
+            }
+
             
             Button {
                 confirm = true
@@ -100,7 +101,7 @@ struct GasUsageView: View {
                 }
                 
                 HStack {
-                    Text("You have used \(gasUsage)m³ in the month of \(month.displayName). You may loose credits if you have used too much.")
+                    Text("You have travelled \(distanceTravelled) in \(month). You may loose credits if you have used too much.")
                         .font(.custom("Josefin Sans", size: 16))
                         .multilineTextAlignment(.leading)
                     Spacer()
@@ -109,15 +110,11 @@ struct GasUsageView: View {
             .padding()
         } actions: {
             Button {
-                if gasUsage <= 6 && !gasWaterHeater {
-                    userData.credits = userData.credits + 10
-                } else if gasUsage <= 16 && gasWaterHeater {
-                    userData.credits = userData.credits + 10
+                if carCalculator.calculateEmissions(carType: car, distance: Float(distanceTravelled), isUrbanDriving: urbanDriving).totalEmissions <= Double(6.33) {
+                    userData.credits = userData.credits + 25
                 } else {
-                    userData.credits = userData.credits - 10
+                    userData.credits = userData.credits + 25
                 }
-                userData.housingData.append(HousingData(month: month, amount: Float(gasUsage), type: .gas))
-                trimOldHousingData(userData: &userData)
 
                 dismiss()
             } label: {
@@ -128,10 +125,5 @@ struct GasUsageView: View {
             Button(role: .cancel) {  } label: { Text("No wait, I think I entered it wrongly!").font(.custom("Josefin Sans", size: 14)).foregroundStyle(.red) }
         }
     }
-}
 
-#Preview {
-    GasUsageView(userData: .constant(StorageData(name: "Advait",
-                                                 username: "contyadvait",
-                                                 carType: .hybrid)))
 }

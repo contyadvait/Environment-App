@@ -1,6 +1,33 @@
 {
-  "originHash" : "70bd0f4f702239698207a9e8ee017e42ef4cb49daaf574d348b72ac63e3ef3cd",
+  "originHash" : "3094223ffa59c31f5d5b6e24f4b9f660100a0acc60f7ab323a55f300474370cc",
   "pins" : [
+    {
+      "identity" : "animatedtoggle",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/aisenurmor/AnimatedToggle.git",
+      "state" : {
+        "revision" : "b01dc5a1b0333f900556eac783bef769792766cc",
+        "version" : "1.0.0"
+      }
+    },
+    {
+      "identity" : "customalert",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/divadretlaw/CustomAlert.git",
+      "state" : {
+        "revision" : "f1385f9ac47eee85ac6297460223d467c7a7fb05",
+        "version" : "4.0.3"
+      }
+    },
+    {
+      "identity" : "customtoggle",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/akardas16/CustomToggle.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "beb32c9bbe13cf60b21d34bef398500f7021cbaf"
+      }
+    },
     {
       "identity" : "forever",
       "kind" : "remoteSourceControl",
@@ -8,6 +35,33 @@
       "state" : {
         "revision" : "90274e87842722d9b79e61431cbbef1c418944b6",
         "version" : "1.1.0"
+      }
+    },
+    {
+      "identity" : "windowkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/divadretlaw/WindowKit",
+      "state" : {
+        "revision" : "d9a7d0fffaf1ddf390f88f5a0d1cd970df8d0309",
+        "version" : "2.5.2"
+      }
+    },
+    {
+      "identity" : "windowreader",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/divadretlaw/WindowReader",
+      "state" : {
+        "revision" : "295d4e6c1aacd3c6a79e47c70f7b2745b8e0399e",
+        "version" : "2.0.1"
+      }
+    },
+    {
+      "identity" : "windowscenereader",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/divadretlaw/WindowSceneReader",
+      "state" : {
+        "revision" : "1f37f310e15a9a58014f2dbfce29526e5f3f4567",
+        "version" : "3.1.2"
       }
     }
   ],

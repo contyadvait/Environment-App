@@ -10,18 +10,17 @@ import CustomAlert
 import CustomToggle
 import AnimatedToggle
 
-struct GasUsageView: View {
+struct ElectricalUsageView: View {
     @Binding var userData: StorageData
-    @State var gasUsage: Int = 0
+    @State var electricalUsage: Int = 0
     @State var confirm = false
     @Environment(\.dismiss) var dismiss
     @State var month: Month = .jan
-    @State var gasWaterHeater: Bool = false
     @Environment(\.colorScheme) var colorScheme
     var body: some View {
         VStack {
             HStack {
-                Text("Gas Usage")
+                Text("Electrical Usage")
                     .font(.custom("Crimson Pro", size: 36))
                 Spacer()
                 Button {
@@ -33,40 +32,19 @@ struct GasUsageView: View {
                 .buttonStyle(.plain)
             }
             HStack {
-                Text("Track your gas usage here")
+                Text("Track your electrical usage here")
                     .font(.custom("Crimson Pro", size: 24))
                 Spacer()
             }
             HStack {
-                TextField("Enter Gas Usage Here", value: $gasUsage, format: .number)
+                TextField("Enter Electrical Usage Here", value: $electricalUsage, format: .number)
                     .keyboardType(.numberPad)
                     .textFieldStyle(.roundedBorder)
                     .font(.custom("Josefin Sans", size: 16))
-                Text("m³")
+                Text("kWh")
                     .font(.custom("Josefin Sans", size: 16))
             }
-            
-            HStack {
-                Text("Do you have a gas water heater?")
-                    .font(.custom("Josefin Sans", size: 16))
-                Spacer()
-                AnimatedToggle(
-                    isOn: gasWaterHeater,
-                    settings: .init(height: 20),
-                    onTapAction: { isOn in
                         
-                    }
-                )
-                .editing(
-                    on: .init(
-                        backgroundColor: .green, shadowColor: colorScheme == .dark ? .black : .white
-                    ),
-                    off: .init(
-                        backgroundColor: .red, shadowColor: colorScheme == .dark ? .black : .white
-                    )
-                )
-            }
-            
             HStack {
                 Text("What month is this for? ")
                     .font(.custom("Josefin Sans", size: 16))
@@ -100,7 +78,7 @@ struct GasUsageView: View {
                 }
                 
                 HStack {
-                    Text("You have used \(gasUsage)m³ in the month of \(month.displayName). You may loose credits if you have used too much.")
+                    Text("You have used \(electricalUsage)kWh in the month of \(month.displayName). You may loose credits if you have used too much.")
                         .font(.custom("Josefin Sans", size: 16))
                         .multilineTextAlignment(.leading)
                     Spacer()
@@ -109,16 +87,13 @@ struct GasUsageView: View {
             .padding()
         } actions: {
             Button {
-                if gasUsage <= 6 && !gasWaterHeater {
-                    userData.credits = userData.credits + 10
-                } else if gasUsage <= 16 && gasWaterHeater {
+                if electricalUsage <= 450 {
                     userData.credits = userData.credits + 10
                 } else {
                     userData.credits = userData.credits - 10
                 }
-                userData.housingData.append(HousingData(month: month, amount: Float(gasUsage), type: .gas))
+                userData.housingData.append(HousingData(month: month, amount: Float(electricalUsage), type: .electrical))
                 trimOldHousingData(userData: &userData)
-
                 dismiss()
             } label: {
                 Text("Yes, I am sure about this")
@@ -131,7 +106,7 @@ struct GasUsageView: View {
 }
 
 #Preview {
-    GasUsageView(userData: .constant(StorageData(name: "Advait",
+    ElectricalUsageView(userData: .constant(StorageData(name: "Advait",
                                                  username: "contyadvait",
                                                  carType: .hybrid)))
 }
