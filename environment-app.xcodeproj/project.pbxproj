@@ -11,10 +11,12 @@
 		F16F57EE2D151AD10082EEEA /* CustomAlert in Frameworks */ = {isa = PBXBuildFile; productRef = F16F57ED2D151AD10082EEEA /* CustomAlert */; };
 		F16F57F12D151FAA0082EEEA /* AnimatedToggle in Frameworks */ = {isa = PBXBuildFile; productRef = F16F57F02D151FAA0082EEEA /* AnimatedToggle */; };
 		F16F57F42D1520C80082EEEA /* CustomToggle in Frameworks */ = {isa = PBXBuildFile; productRef = F16F57F32D1520C80082EEEA /* CustomToggle */; };
+		F16F580C2D1550310082EEEA /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = F16F580B2D15502E0082EEEA /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		F151D1F12D140900002C4A28 /* environment-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "environment-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F16F580B2D15502E0082EEEA /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -56,6 +58,7 @@
 		F151D1E82D1408FF002C4A28 = {
 			isa = PBXGroup;
 			children = (
+				F16F580B2D15502E0082EEEA /* README.md */,
 				F151D1F32D140900002C4A28 /* environment-app */,
 				F151D1F22D140900002C4A28 /* Products */,
 			);
@@ -153,6 +156,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F16F580C2D1550310082EEEA /* README.md in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
